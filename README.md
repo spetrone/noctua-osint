@@ -4,12 +4,12 @@ This is a web application for OSINT for internet-connected devices. Search by IP
 
 ## Requirements
 
-Django 4.1.5
-django-environ 0.9.0
-django-leaflet 0.28.3
-GDAL 3.4.1
-python 3.10.6
-ZoomEye account with an API key
+-Django 4.1.5
+-django-environ 0.9.0
+-django-leaflet 0.28.3
+-GDAL 3.4.1
+-python 3.10.6
+-ZoomEye account with an API key
 
 ## Installation
 **1. Clone the Repository**
@@ -25,6 +25,7 @@ ZoomEye account with an API key
     $ pip install -r requirements.txt
     
  **4. Install GDAL**
+
 *This is required to use Django-Leaflet used for displaying maps*
 
 Installation of the GDAL library is platform-specific. Follow instructions from mothergeo (GDAL's creator) for your system:
@@ -36,6 +37,7 @@ https://gdal.org/download.html
   ## Configure & Run
 **1. Create environment variables**
 *This will hide secret information. We will add variables later on.*
+
 In settings.py write these lines 
 
     import environ
