@@ -4,12 +4,18 @@ This is a web application for OSINT for internet-connected devices. Search by IP
 
 ## Requirements
 
--Django 4.1.5
--django-environ 0.9.0
--django-leaflet 0.28.3
--GDAL 3.4.1
--python 3.10.6
--ZoomEye account with an API key
+Django 4.1.5
+
+django-environ 0.9.0
+
+django-leaflet 0.28.3
+
+GDAL 3.4.1
+
+python 3.10.6
+
+ZoomEye account with an API key
+
 
 ## Installation
 **1. Clone the Repository**
@@ -45,6 +51,7 @@ In settings.py write these lines
     environ.Env.read_env() 
 
 **2. Create a PostgreSQL database**
+
 *(install pgAdmin and postgres if not already installed)*
 
     $ psql postgres
@@ -78,6 +85,7 @@ Create a superuser
     python3 manage.py createsuperuser
 
 **4. Generate a new secret key for the Django app**
+
 1.  Access the Python Interactive Shell
 
 2.  Import  `get_random_secret_key()`  from`django.core.management.utils`.
@@ -88,6 +96,7 @@ Create a superuser
 	`SECRET_KEY='xxxxxxxxxxxxxxxxxxxxxxxxxx'`  (it is a string)
 
 **5. Configure ZoomEye API Key**
+
 In the `.env` file add your ZoomEye API key:
 
     ZOOMEYE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
