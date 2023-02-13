@@ -1,0 +1,76 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<!--include jquery-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+
+<div class="container">
+  
+    <form action="{% url 'dash_query' %}" method="POST">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Submit">
+    </form>
+</div>
+</br>
+
+
+
+  <div class="container">
+
+    <div class="row">
+      <h4>ZoomEye Search Results</h4>
+      <div class="col">
+        {% if err_dict.items %}
+            {% for k,v in err_dict.items %}
+              <p>{{k}} : {{v}}</p>
+            {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="row">
+    <div class="col-md">
+      <form id="result_sel_form" action="{% url 'dash_select' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="selected_ind" name="selected_ind" value="-1">
+        
+        {% if filtered_zdata %}
+        {% for d in filtered_zdata %}
+        <div class="row mt-1 result_row">
+            <input type="hidden" class="result_index" name="index" id="index" value={{forloop.counter0 }}>
+          
+          <div class="col-sm-5 btn btn-primary mt-1">
+
+            <!-- <div class="row">
+              <p>Index: {{forloop.counter0 }}</p>
+            </div> -->
+
+            {% for key, value in d.items %}
+            <div class="row">
+              <div class="col-sm">{{key}}</div>
+              <div class="col-sm text-wrap">{{value}}</div>
+            </div>
+            {% endfor %}
+
+          </div>
+        </div>
+        {% endfor %}
+     {% endif %}
+
+    </form>
+    </div>
+
+    </div>
+
+    <script>    
+      $(".result_row").click(function () {
+        $("#result_sel_form").find("#selected_ind").attr("value", $(this).find("#index").val());
+        //$("#result_sel_form").find("#selected_key").attr("value", $(this).find("#result_key").val());
+        var ind = $("#result_sel_form").find("#selected_ind").val();
+        //var ind = $(this).find("#index").val();
+        $("#result_sel_form").submit();
+      });
+  </script>
+
+{% endblock %}

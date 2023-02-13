@@ -1,0 +1,33 @@
+<!-- templates/registration/signup.html -->
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<div class="h-100 d-flex align-items-center justify-content-center ">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h2 class="text-center p-4">NOCTUA</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="p-3 border border-5 border-light" style="background:rgb(92, 0, 173) ">
+                        <h2>Sign up</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit">Sign Up</button>
+                        </form>
+                        <p>Existing User? <a href="{% url 'login' %}">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+
+<div class="container">
+
+    <div class="container">
+        <div class="row gy-5">
+          <div class="col-md border border-1">
+            <h4>Account</h4>
+                <table>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Username: </td>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email: </td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Name: </td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    </tr>
+
+                </table>
+                    </div>
+                    </div>
+
+        <div class="row mt-5">
+            <div class="col-md border border-1 mt-6">
+
+                <h5>Activity</h5>
+                <table>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Last login: </td>
+                        <td>{{user.last_login}}</td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="col-md border border-1 mt-6">
+
+                <h5>ZoomEye Resources</h5>
+                <table>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% if zoomeye_resources.items %}
+                        {% for k,v in zoomeye_resources.items %}
+                        <tr>
+                            <td>{{k}}: </td>
+                            <td>{{v}}</td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+
+                </table>
+            </div>
+        </div>
+    </div>
+    
+
+  
+</div>
+
+{% endblock %}

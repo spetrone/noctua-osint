@@ -1,0 +1,158 @@
+{% extends "base_generic.html" %}
+{% block content %}
+{% load leaflet_tags %}
+
+<head>
+    
+    {% leaflet_js %}
+    {% leaflet_css %}
+
+    <style>
+
+        .leaflet-container {  /* all maps */
+            width:  600px;
+            height: 400px;
+        }
+    
+        #specialbigmap {
+            height: 800px;
+        }
+    
+        /* Resize the "display_raw" textbox */
+        .django-leaflet-raw-textarea {
+            width: 100%;
+        }
+    
+    </style>
+    
+
+</head>
+
+
+
+
+<script>
+
+window.addEventListener("map:init", function (event) {
+    var map = event.detail.map;
+    var lat = "{{selected_dict.location.lat}}";
+    var lon = "{{selected_dict.location.lon}}";
+    L.marker([lat, lon]).addTo(map);
+    map.setView([lat,lon],9);
+
+});
+
+</script>
+
+
+<!--include jquery-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+
+
+<div class="container">
+
+
+    <div class="row">
+  
+        <div class="col">
+            <h2>Results</h4>
+            <div class="row">
+                <div class="col-md mt-2 ">
+                    <p>Retrieved from <a href="https://www.zoomeye.org/">ZoomEye</a></p>
+                    <!-- <p>Key: {{ key }}</p> -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col mt-2 border border-1 border-light">
+                    
+                        <h4 class="p-1">Details</h4>
+                        {% if selected_dict.items %}
+                            {% for k, v in selected_dict.items %}
+                                {% if k != "portinfo" and k != "ssl" and k != "location" %}
+                                   <p class="ms-2">{{ k }} : {{ v }}</p>
+                                {% elif k == "location" %}
+                                    <p class="ms-2 mb-0 pb-0">Latitude : {{ v.lat }}</p>
+                                    <p class="ms-2 mt-0 pt-0">Longitude : {{ v.lon }}</p>
+                                {% endif %}
+                            {% endfor %}
+                            {% if port_dict.app %}
+                                <p class="ms-2"> App:{{ port_dict.app }}</p>
+                            {% endif %}
+                        {% endif %}
+ 
+                </div>
+
+                <div class="col mt-2 border border-1 border-light">
+                    <div class="col-sm-2 p-2">
+                        <h4 class="p-1">Map</h4>
+                        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+                    </div>
+                </div>
+                <div class="col mt-2 border border-1 border-light" style="width:100%;max-height: 500px; overflow-y: auto;">
+              
+                        <h4>Vulnerabilities</h4>
+                        {% if cve_list %} 
+                            <div class="row">
+                                <div class="col">
+                                    <h6>CVE</h6>
+                                </div>
+                                <div class="col">
+                                    <h6>Severity</h6>
+                                </div>
+                            </div>
+                            {% for vul in cve_list %}
+                                <div class="row">
+                                    <div class="col">
+                                        <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ vul.id }}"  >{{ vul.id }} </a>
+                                    </div>
+                                    <div class="col">
+                                        <p>{{ vul.severity }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+        
+                </div>
+            </div>
+            <div class="row">
+                <div class="col mt-2 border border-1 border-light overflow-auto " 
+                style="max-height:170px;">
+                    <h5 class="p-2">Banner</h5>
+                    {%if port_dict.banner %}
+                        <p>{{ port_dict.banner }}</p>
+                    {% endif %}
+                </div> 
+            </div>
+            <div class="row">
+                <div class="col mt-2 border border-1 border-light overflow-auto" 
+                    style="max-height:170px;">
+                    <h5 class="p-2">SSL</h5>
+                    {%if selected_dict.ssl %}
+                        <p>{{ selected_dict.ssl }}</p>
+                    {% endif %}
+                </div> 
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+
+
+
+</div>
+{% endblock %}
+
+
+<script>    
+    $(".result_row").click(function () {
+      $("#result_sel_form").find("#selected_ind").attr("value", $(this).find("#index").val());
+     // $("#result_sel_form").find("#selected_key").attr("value", $(this).find("#result_key").val());
+      var ind = $("#result_sel_form").find("#selected_ind").val();
+      //var ind = $(this).find("#index").val();
+      $("#result_sel_form").submit();
+    });
+
+
+</script>

@@ -1,0 +1,66 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<div class="h-100 d-flex align-items-center justify-content-center">
+    
+  </div>
+
+
+
+
+  <div class="h-100 d-flex align-items-center justify-content-center ">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h2 class="text-center p-4">NOCTUA</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                  <div class="p-3 border border-5 border-light" style="background:rgb(92, 0, 173)">
+                    {% if form.errors %}
+                      <p>Your username and password didn't match. Please try again.</p>
+                    {% endif %}
+                
+                    {% if next %}
+                    {% if user.is_authenticated %}
+                      <p>Your account doesn't have access to this page. To proceed,
+                      please login with an account that has access.</p>
+                    {% else %}
+                      <p>Please login to see this page.</p>
+                    {% endif %}
+                  {% endif %}
+                
+                  <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <table>
+                      <tr>
+                        <td>{{ form.username.label_tag }}</td>
+                        <td>{{ form.username }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ form.password.label_tag }}</td>
+                        <td>{{ form.password }}</td>
+                      </tr>
+                    </table>
+                    <input type="submit" value="login">
+                    <input type="hidden" name="next" value="{{ next }}">
+                  </form>
+                
+                  {# Assumes you setup the password_reset view in your URLconf #}
+                  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+                  <p><a href="{% url 'signup' %}">Sign Up</a></p>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+</div>
+
+  
+
+{% endblock %}
