@@ -9,8 +9,7 @@ import re
 class QueryForm(forms.Form):
     QUERY_CHOICES= [
     ('ip', 'IP'),
-    ('hostname', 'Host Name'),
-    ('device', 'Device')
+    ('hostname', 'Host Name')
     ]
     query_choice= forms.CharField(label='Type of query:', widget=forms.Select(choices=QUERY_CHOICES))
     query = forms.CharField(label=' ', max_length=100, required=True)
