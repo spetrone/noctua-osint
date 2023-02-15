@@ -50,6 +50,8 @@ In settings.py write these lines
     env = environ.Env()
     environ.Env.read_env() 
 
+Create a file .env in the same directory as settings.py
+
 **2. Create a PostgreSQL database**
 
 *(install pgAdmin and postgres if not already installed)*
