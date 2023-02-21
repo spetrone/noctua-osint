@@ -43,13 +43,13 @@ class AuthorizedUserIntergrationTests(TestCase):
         self.assertTemplateUsed('account_profile.html')
 
     #test displaying the main dashboard
-    def test_dashboard_access(self):
+    def test_dashboard_access2(self):
         response = self.client.get("/dashboard/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed('index.html')
 
     #test user accessing page - "dash_query" - which is the main dashboard as well
-    def test_dashboard_access(self):
+    def test_dashboard_access3(self):
         response = self.client.get(reverse("dash_query"))
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed('index.html')
