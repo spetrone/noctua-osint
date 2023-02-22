@@ -62,18 +62,35 @@ class DashboardIntegrationTests(TestCase):
     def test_get(self):
         response = self.client.get("/dashboard/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed('index.html')
 
-    #test post from initial page load
+    #test post from initial page load with IP search
     def test_dash_post_success(self):
         response = self.client.post("/dashboard/", data={"query_choice" : "ip", "query": "128.2.42.10"})
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertEqual(response["Location"], "/dashboard/dash_query/")
+        self.assertTemplateUsed('index.html')
+
+        #test post from initial page load, with hostname search
+    def test_dash_host_post_success(self):
+        response = self.client.post("/dashboard/", data={"query_choice" : "hostname", "query": "google.ca"})
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertEqual(response["Location"], "/dashboard/dash_query/")
+        self.assertTemplateUsed('index.html')
     
-    #test from search on /dashboard/dash_query/ URL
+    #test from search on /dashboard/dash_query/ URL, with IP search
     def test_dash_research_post_success(self):
         response = self.client.post("/dashboard/dash_query/", data={"query_choice" : "ip", "query": "128.2.42.10"})
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed('index.html')
+
+        #test from search on /dashboard/dash_query/ URL, with hostname search
+    def test_dash_research_post_success(self):
+        response = self.client.post("/dashboard/dash_query/", data={"query_choice" : "ip", "query": "128.2.42.10"})
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed('index.html')
 
 
 
@@ -168,11 +185,12 @@ class DashSelectIntegrationTests(TestCase):
         response = self.client.post(reverse("dash_select"), data={"id" : "result_sel_form", "selected_ind": "0"})
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, "results.html")
 
         #ensure context is containing proper items
         correct_context_keys = {'ind', 'selected_dict', 'port_dict', 'cve_list'}
         self.assertTrue(correct_context_keys <= set( response.context.keys()) )
-        self.assertTemplateUsed(response, "results.html")
+        
 
         #using knowne test data from setup in session, test that 
         #the correct item was selected
@@ -181,6 +199,11 @@ class DashSelectIntegrationTests(TestCase):
         #ensure CVE list is detected for selection (#0 an Apache server 2.4.54)
         self.assertFalse(len(response.context["cve_list"]) == 0)
 
-    #test that the map is loaded with correct coordinates
+    def test_device_empty_cve_list(self):
+        response = self.client.post(reverse("dash_select"), data={"id" : "result_sel_form", "selected_ind": "3"})
 
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, "results.html")
     
+        #ensure CVE list is empty because based on the test data it should be
+        self.assertTrue(len(response.context["cve_list"]) == 0)
