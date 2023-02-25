@@ -102,7 +102,7 @@ class UnauthorizedUserIntegrationTests(TestCase):
         self.assertRedirects(response, reverse("login") + "?next=/dashboard/")
 
     #test user accessing page - "dash_query" - which is the main dashboard as well
-    def test_dashboard_access(self):
+    def test_dashboard_access2(self):
         response = self.client.get(reverse("dash_query"))
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertTemplateUsed('login.html')
@@ -110,7 +110,7 @@ class UnauthorizedUserIntegrationTests(TestCase):
 
     #test displaying the selection page (with no session data, should redirect
     # to main dashboard)
-    def test_dashboard_access(self):
+    def test_dashboard_access3(self):
         response = self.client.get(reverse("dash_select"))
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertTemplateUsed('login.html')
