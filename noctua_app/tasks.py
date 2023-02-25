@@ -41,63 +41,67 @@ def zoomeye_filter_short(data_list) :
 
 
 def get_cve_list(app, version) :
-    #get CPE
-
+    
     #create a list to pass to template; will return empty list if no vulns
     cve_list = []
-
-    #build query
-    query = app + ":" + version
-    cpe_name = "" #initialize empty string for testing later
-
-    #get cpe name
-    cpe_response  = requests.get("https://services.nvd.nist.gov/rest/json/cpes/2.0?cpeMatchString=cpe:2.3:a:*:" + query)
-    if cpe_response :#200
-        cpe_results = json.loads(cpe_response.text)
     
-        if int(cpe_results["totalResults"]) > 0 :
-            #use first entry
-            print(cpe_results["products"][0]["cpe"]["cpeName"])
-            cpe_name = cpe_results["products"][0]["cpe"]["cpeName"]
+    #more input validation
+    if app and version and app != "" and version != "" :
 
-    elif not cpe_response or cpe_results["totalResults"] > 0 : # do a keyword search query instead for more generic search
-            query_string = app + " " + version 
-            cpe_response  = requests.get("https://services.nvd.nist.gov/rest/json/cpes/2.0?keywordSearch=" + query_string)
+ 
+
+        #build query
+        query = app + ":" + version
+        cpe_name = "" #initialize empty string for testing later
+
+        #get cpe name
+        cpe_response  = requests.get("https://services.nvd.nist.gov/rest/json/cpes/2.0?cpeMatchString=cpe:2.3:a:*:" + query)
+        if cpe_response :#200
             cpe_results = json.loads(cpe_response.text)
-   
+        
             if int(cpe_results["totalResults"]) > 0 :
+                #use first entry
+                print(cpe_results["products"][0]["cpe"]["cpeName"])
                 cpe_name = cpe_results["products"][0]["cpe"]["cpeName"]
 
-    #continue if a cpe name was retrieved, otherwise return empty list, don't do cve search
-    if cpe_name != "" :
-        cve_query = "cpeName=" + cpe_name
-    else :
-        cve_query = "keywordSearch=" + version# the generic query built from function args 
-        print(cve_query)
+        elif not cpe_response or cpe_results["totalResults"] > 0 : # do a keyword search query instead for more generic search
+                query_string = app + " " + version 
+                cpe_response  = requests.get("https://services.nvd.nist.gov/rest/json/cpes/2.0?keywordSearch=" + query_string)
+                cpe_results = json.loads(cpe_response.text)
+    
+                if int(cpe_results["totalResults"]) > 0 :
+                    cpe_name = cpe_results["products"][0]["cpe"]["cpeName"]
 
-    nvd_response = requests.get("https://services.nvd.nist.gov/rest/json/cves/2.0?"+ cve_query)
-    # nvd_response_text = nvd_response.text
+        #continue if a cpe name was retrieved, otherwise return empty list, don't do cve search
+        if cpe_name != "" :
+            cve_query = "cpeName=" + cpe_name
+        else :
+            cve_query = "keywordSearch=" + version# the generic query built from function args 
+            print(cve_query)
 
-    if nvd_response : #200
-        response_dict = json.loads(nvd_response.text)
+        nvd_response = requests.get("https://services.nvd.nist.gov/rest/json/cves/2.0?"+ cve_query)
+        # nvd_response_text = nvd_response.text
 
-        #extract specific attributes and filter the dictionary
-        vulnerabilities = response_dict["vulnerabilities"]
+        if nvd_response : #200
+            response_dict = json.loads(nvd_response.text)
 
-        if vulnerabilities : # if not empty
+            #extract specific attributes and filter the dictionary
+            vulnerabilities = response_dict["vulnerabilities"]
 
-            for entry in vulnerabilities :
-                sub_dict = {}
-                #add id
-                sub_dict["id"] = entry["cve"]["id"]
-                #add severity
-                metrics = entry["cve"]["metrics"]
-                if metrics.items() :
-                    if "cvssMetricV31" in metrics.keys() :
-                        sub_dict["severity"] = entry["cve"]["metrics"]["cvssMetricV31"][0]["cvssData"]["baseSeverity"]
-                    elif "cvssMetricV2" in metrics.keys() :
-                        sub_dict["severity"] = entry["cve"]["metrics"]["cvssMetricV2"][0]["baseSeverity"]
-                cve_list.append(sub_dict)
+            if vulnerabilities : # if not empty
+
+                for entry in vulnerabilities :
+                    sub_dict = {}
+                    #add id
+                    sub_dict["id"] = entry["cve"]["id"]
+                    #add severity
+                    metrics = entry["cve"]["metrics"]
+                    if metrics.items() :
+                        if "cvssMetricV31" in metrics.keys() :
+                            sub_dict["severity"] = entry["cve"]["metrics"]["cvssMetricV31"][0]["cvssData"]["baseSeverity"]
+                        elif "cvssMetricV2" in metrics.keys() :
+                            sub_dict["severity"] = entry["cve"]["metrics"]["cvssMetricV2"][0]["baseSeverity"]
+                    cve_list.append(sub_dict)
                     
     return cve_list
 

@@ -70,7 +70,7 @@ window.addEventListener("map:init", function (event) {
                         {% if selected_dict.items %}
                             {% for k, v in selected_dict.items %}
                                 {% if k != "portinfo" and k != "ssl" and k != "location" %}
-                                   <p class="ms-2">{{ k }} : {{ v }}</p>
+                                   <p class="ms-2 text-break">{{ k }} : {{ v }}</p>
                                 {% elif k == "location" %}
                                     <p class="ms-2 mb-0 pb-0">Latitude : {{ v.lat }}</p>
                                     <p class="ms-2 mt-0 pt-0">Longitude : {{ v.lon }}</p>
